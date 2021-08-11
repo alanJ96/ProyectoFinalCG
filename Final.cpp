@@ -88,7 +88,15 @@ float	crecimiento_aro = 0.0f,
 		anim3 =0.0f,
 		anim4 =0.0f,
 		anguloD = 90.0f,
-		anguloI = 90.0f;
+		anguloI = 90.0f,
+		posicionPX =0.0f,
+		posicionPY =0.0f,
+		poliX = 0.0f,
+		poliZ = 0.0f,
+		Npolivuelta = 0.0f,
+		Npolicaminando = 0.5f,
+		NpoliIzquierda = 0.0f,
+		anguloPoli = 90.0f;
 
 bool	animacion = false,
 		sube = false,
@@ -106,7 +114,12 @@ bool	animacion = false,
 		Act_anim4 = false,
 		Act_anim5 = false,
 		puertaA = false,
-		puertaC = false;
+		puertaC = false,
+		pelotaAB = true,
+		pelotaBA = false,
+		poliIda = true,
+		poliRegreso = false,
+		poliRecorrido = false;
 
 
 
@@ -298,6 +311,66 @@ void animate(void)
 			}
 		}
 	}
+
+	////////////////////////////*policia*///////////////////////////////////////	
+	
+	if(poliIda){
+		if(poliX < 300.0f){
+			//Npolicaminando = 0.5f;
+			poliX += 2.0f;
+		}
+		else{
+			anguloPoli = -90.0f;
+			//Npolivuelta = 1.0f;
+			//Npolicaminando =0.0f;
+			poliRegreso = true;
+			poliIda = false;
+		}
+	}
+	if(poliRegreso){
+		if(poliX > 0.0f){
+			//Npolicaminando = 0.5f;
+			poliX -=2.0f;
+		}
+		else{
+			anguloPoli = 90.0f;
+			//Npolivuelta = 1.0f;
+			//Npolicaminando =0.0f;
+			poliRegreso = true;
+			poliIda = false;
+		}
+	
+	}
+	
+
+	/*pelota*/
+	if(pelotaAB){
+	if(posicionPX < 300.0f){
+		posicionPX += 2.0f;	
+		if(posicionPX < 150.0f)
+			posicionPY +=2.0f;
+		else
+			posicionPY -=2.0f;
+	}
+	else{
+		pelotaAB = false;
+		pelotaBA = true;
+	}
+	}
+	if(pelotaBA){
+	if(posicionPX > 0.0f){
+		posicionPX -= 2.0f;	
+		if(posicionPX > 150.0f)
+			posicionPY +=2.0f;
+		else
+			posicionPY -=2.0f;
+	}
+	else{
+		pelotaAB = true;
+		pelotaBA = false;
+	}
+	}
+
 	/*movimiento de la ola*/
 	if (recorrido_ola < 350.0f) {
 		recorrido_ola += 1.0f;
@@ -485,9 +558,7 @@ int main()
 	Model arbolito("resources/objects/arboles/Gledista_Triacanthos.obj");
 	Model arbolito2("resources/objects/arboles/Gledista_Triacanthos_2.obj");
 	Model arbolito3("resources/objects/arboles/Gledista_Triacanthos_3.obj");
-
 	Model pelota("resources/objects/pelota/pelota.obj");
-
 	Model piso("resources/objects/piso2/Piso2.obj");
 	Model piso2("resources/objects/piso/Piso.obj");
 	Model casa("resources/objects/Muro/casa7.obj");
@@ -496,12 +567,19 @@ int main()
 	Model reja1("resources/objects/Muro/reja5.obj");
 	Model reja2("resources/objects/Muro/reja4.obj");
 	Model lambo("resources/objects/Lambo/.obj");
-
 	Model aro("resources/objects/aro/aro.obj");
 	Model ola("resources/objects/ola/ola.obj");
 	Model pez("resources/objects/Fishes/TropicalFish01.obj");
 
-	
+	ModelAnim policaminando("resources/objects/policia/caminar/caminar.dae");
+	policaminando.initShaders(animShader.ID);
+
+	//ModelAnim polivuelta("resources/objects/policia/vuelta/vuelta.dae");
+	//polivuelta.initShaders(animShader.ID);
+
+	//ModelAnim poliIzquierda("resources/objects/policia/izquierda/izquierda.dae");
+	//poliIzquierda.initShaders(animShader.ID);
+
 	ModelAnim nino("resources/objects/niño/Jumping.dae");
 	nino.initShaders(animShader.ID);
 	ModelAnim nina("resources/objects/niña/Jumping.dae");
@@ -610,17 +688,40 @@ int main()
 		animShader.setVec3("viewPos", camera.Position);
 
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f , 0.0f, 500.0f));
-		model = glm::scale(model, glm::vec3(0.1f * anim1));	
+		model = glm::scale(model, glm::vec3(0.2f));	
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		animShader.setMat4("model", model);
 		nino.Draw(animShader);
 			
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f , 0.0f, 500.0f));
-		model = glm::scale(model, glm::vec3(0.1f * anim1));	
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-200.0f , 0.0f, 500.0f));
+		model = glm::scale(model, glm::vec3(0.2f));	
 		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		animShader.setMat4("model", model);
 		nina.Draw(animShader);
 
+		/*policia*/
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f + poliX, 0.0f, 900.0f + poliZ));
+		model = glm::scale(model, glm::vec3(Npolicaminando));	
+		model = glm::rotate(model, glm::radians(anguloPoli), glm::vec3(0.0f, 1.0f, 0.0f));
+		animShader.setMat4("model", model);
+		policaminando.Draw(animShader);
+
+		//model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f + poliX, 0.0f, 800.0f + poliZ));
+		//model = glm::scale(model, glm::vec3(Npolivuelta));	
+		//model = glm::rotate(model, glm::radians(anguloPoli), glm::vec3(0.0f, 1.0f, 0.0f));
+		//animShader.setMat4("model", model);
+		//polivuelta.Draw(animShader);
+
+
+		//model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f + poliX, 0.0f, 800.0f + poliZ));
+		//model = glm::scale(model, glm::vec3(NpoliIzquierda));	
+		//model = glm::rotate(model, glm::radians(anguloPoli), glm::vec3(0.0f, 1.0f, 0.0f));
+		//animShader.setMat4("model", model);
+		//poliIzqueirda.Draw(animShader);
+
+
+
+		/*tipo lago*/
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-200.0f + movi_PerX, movi_PerY, -500.0f + movi_PerZ));
 		model = glm::scale(model, glm::vec3(0.1f * anim1));	
 		model = glm::rotate(model, glm::radians(movi_rota), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -659,6 +760,12 @@ int main()
 		/*-------------------------------------------------------------------------------------------------------------------------*/
 		/*--------------------------------------------------------- Muro ----------------------------------------------------------*/
 		/*-------------------------------------------------------------------------------------------------------------------------*/
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-195.0f + posicionPX, 45.0f + posicionPY, 500.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+		staticShader.setMat4("model", model);
+		pelota.Draw(staticShader);
+		
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(posi_aroX, -2.0f + sube_aro, posi_aroZ));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.01f + crecimiento_aro));
@@ -704,25 +811,25 @@ int main()
 			/*-------------------------------------------------------------------------------------------------------------------------*/
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(600.0f, -0.001f, -500.0f));
+		model = glm::translate(model, glm::vec3(600.0f, -0.01f, -500.0f));
 		model = glm::scale(model, glm::vec3(15.0f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(600.0f, -0.002f, 430.0f));
+		model = glm::translate(model, glm::vec3(600.0f, -0.02f, 430.0f));
 		model = glm::scale(model, glm::vec3(15.0f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-680.0f, -0.003f, 500.0f));
+		model = glm::translate(model, glm::vec3(-680.0f, -0.03f, 500.0f));
 		model = glm::scale(model, glm::vec3(15.0f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-680.0f, -0.004f, -450.0f));
+		model = glm::translate(model, glm::vec3(-680.0f, -0.04f, -450.0f));
 		model = glm::scale(model, glm::vec3(15.0f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
