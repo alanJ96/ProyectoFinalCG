@@ -1,2 +1,0 @@
-C:\Users\alan_\Desktop\tarea\2021-2\lab CompuGrafica\practica1\Debug\practica1.exe
-C:\Users\alan_\Desktop\tarea\2021-2\lab CompuGrafica\practica1\Debug\practica1.pdb
