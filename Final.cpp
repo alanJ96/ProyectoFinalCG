@@ -700,11 +700,11 @@ int main()
 		nina.Draw(animShader);
 
 		/*policia*/
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f + poliX, 0.0f, 900.0f + poliZ));
-		model = glm::scale(model, glm::vec3(Npolicaminando));	
-		model = glm::rotate(model, glm::radians(anguloPoli), glm::vec3(0.0f, 1.0f, 0.0f));
-		animShader.setMat4("model", model);
-		policaminando.Draw(animShader);
+		//model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f + poliX, 0.0f, 900.0f + poliZ));
+		//model = glm::scale(model, glm::vec3(Npolicaminando));	
+		//model = glm::rotate(model, glm::radians(anguloPoli), glm::vec3(0.0f, 1.0f, 0.0f));
+		//animShader.setMat4("model", model);
+		//policaminando.Draw(animShader);
 
 		//model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f + poliX, 0.0f, 800.0f + poliZ));
 		//model = glm::scale(model, glm::vec3(Npolivuelta));	
